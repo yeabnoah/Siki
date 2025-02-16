@@ -37,7 +37,15 @@ export default function Page() {
 
             <Accordion key={index} type="single" collapsible>
               <AccordionItem value="item-1">
-                <AccordionTrigger>{secret.title}</AccordionTrigger>
+                <AccordionTrigger>
+                  <div className=" w-full flex justify-between items-center">
+                    <div>{secret.title}</div>
+
+                    <span className=" text-white/80 text-xs">
+                      {secret.createdAt}
+                    </span>
+                  </div>
+                </AccordionTrigger>
                 <AccordionContent>{secret.secretContent}</AccordionContent>
               </AccordionItem>
             </Accordion>

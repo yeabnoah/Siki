@@ -3,7 +3,8 @@ const dummyData = {
     {
       id: 1,
       title: "My First Secret",
-      secretContent: "I ate the last slice of pizza.",
+      secretContent:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque at nibh a libero varius suscipit. Pellentesque malesuada ante est, lobortis feugiat neque porta in. Nullam lobortis aliquet tempor. Fusce vulputate sed risus sed fermentum. Integer dapibus interdum cursus. Donec accumsan erat in odio rhoncus faucibus. In hac habitasse platea dictumst. Ut non placerat dui. Aliquam justo nunc, finibus ac lobortis id, aliquet in turpis. Ut at posuere risus. Nam a augue odio. In a mi gravida magna euismod ullamcorper vitae eu ante. ",
       createdAt: "2023-10-01T12:00:00Z",
       comments: [
         {
