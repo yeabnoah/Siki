@@ -4,6 +4,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import dummyData from "@/utils/dummy";
 
 export default function Page() {
   return (
@@ -20,12 +27,20 @@ export default function Page() {
 
           <SidebarTrigger className="-ml-1" />
         </header>
+
         <div className="flex flex-1 flex-col gap-4 p-4">
-          {Array.from({ length: 24 }).map((_, index) => (
-            <div
-              key={index}
-              className="aspect-video h-12 w-full rounded-lg bg-muted/50"
-            />
+          {dummyData.secrets.map((secret, index) => (
+            // <div
+            //   key={index}
+            //   className="aspect-video h-12 w-full rounded-lg bg-muted/50"
+            // />
+
+            <Accordion key={index} type="single" collapsible>
+              <AccordionItem value="item-1">
+                <AccordionTrigger>{secret.title}</AccordionTrigger>
+                <AccordionContent>{secret.secretContent}</AccordionContent>
+              </AccordionItem>
+            </Accordion>
           ))}
         </div>
       </SidebarInset>
