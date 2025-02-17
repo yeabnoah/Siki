@@ -5,6 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
@@ -17,7 +18,7 @@ import { MessageCircle } from "lucide-react";
 export default function Page() {
   return (
     <SidebarProvider
-      className=" bg-white/5"
+      className=" bg-white/5`"
       style={
         {
           "--sidebar-width": "380px",
@@ -48,21 +49,24 @@ export default function Page() {
                     <div className=" w-full flex justify-between items-center">
                       <div>{secret.title}</div>
 
-                      <span className=" text-white/80 text-xs mx-3">
-                        {dateFormat(secret.createdAt, "fullDate")}
-                      </span>
+                      <div className=" flex items-center justify-center">
+                        <div className=" flex flex-row items-center">
+                          <span className=" text-sm px-1 text-xs">12</span>
+                          <MessageCircle size={11} className="" />
+                        </div>
+                        <Separator
+                          orientation="vertical"
+                          className=" h-3  bg-white/70 ml-2"
+                        />
+                        <span className=" text-white/80 text-xs mx-3">
+                          {dateFormat(secret.createdAt, "fullDate")}
+                        </span>
+                      </div>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className=" py-2 text-sm">
                     {secret.secretContent}
                   </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="item-1" className=" border-none">
-                  <div className=" flex flex-row items-center">
-                    <span className=" text-sm px-1 ">12</span>
-                    <MessageCircle size={12} className="" />
-                  </div>
                 </AccordionItem>
               </Accordion>
             </div>
