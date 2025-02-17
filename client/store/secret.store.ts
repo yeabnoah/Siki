@@ -7,6 +7,7 @@ type CommentInterface = {
 };
 
 type SecretInterface = {
+  id?: number;
   title: string;
   secretContent: string;
   createdAt: Date;
@@ -20,12 +21,11 @@ interface SecretStoreInterface {
   createSecret: (
     secret: Omit<SecretInterface, "createdAt" | "comments">
   ) => void;
-  createComment: (
-    comment: Omit<CommentInterface, "createdAt">,
-    secretId: number
-  ) => void;
+  createComment: (comment: string, secretId: number) => void;
 
   getallSecrets: () => Promise<void>;
+
+  setSelectedSecret: (secret: SecretInterface) => void;
 }
 
 const useSecretData = create<SecretStoreInterface>((set) => ({
@@ -33,11 +33,16 @@ const useSecretData = create<SecretStoreInterface>((set) => ({
   selectedSecret: null,
   comments: [],
 
+  setSelectedSecret: (secret: SecretInterface) => {
+    set({ selectedSecret: secret });
+    console.log("selected", secret);
+  },
+
   getallSecrets: async () => {
     const allSecrets = await axiosInstance.get("/secret/getall");
 
-    set({ secrets: allSecrets.data });
-    console.log("secret fetched : 000000000", allSecrets.data);
+    set({ secrets: allSecrets.data.data });
+    console.log("secret fetched ", allSecrets.data.data);
   },
 
   createSecret: (secret) => {
@@ -51,19 +56,20 @@ const useSecretData = create<SecretStoreInterface>((set) => ({
     }));
   },
 
-  createComment: (comment, secretId) => {
-    const newComment: CommentInterface = {
-      ...comment,
-      createdAt: new Date(),
-    };
+  createComment: async (comment, secretId) => {
+    const response = await axiosInstance.post(`/comment/create/${secretId}`, {
+      commentContent: comment,
+    });
 
-    set((state) => ({
-      secrets: state.secrets.map((secret) =>
-        secret === state.secrets[secretId]
-          ? { ...secret, comments: [...secret.comments, newComment] }
-          : secret
-      ),
-    }));
+    console.log(response.data);
+
+    // set((state) => ({
+    //   secrets: state.secrets.map((secret) =>
+    //     secret === state.secrets[secretId]
+    //       ? { ...secret, comments: [...secret.comments, newComment] }
+    //       : secret
+    //   ),
+    // }));
   },
 }));
 

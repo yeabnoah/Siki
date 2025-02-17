@@ -1,36 +1,31 @@
 "use client";
 
 import { AppSidebar } from "@/components/app-sidebar";
+import ThemeSwitcher from "@/components/theme-switcher";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
-import dummyData from "@/utils/dummy";
-import dateFormat from "dateformat";
-import {
-  MessageCircle,
-  Mic,
-  Mic2,
-  Mic2Icon,
-  MicIcon,
-  Microscope,
-  Moon,
-  Sun,
-} from "lucide-react";
-import { useTheme } from "next-themes";
+import useSecretData from "@/store/secret.store";
+import { ArrowDown, ArrowUp, MessageCircle, Mic2Icon } from "lucide-react";
+import { useEffect } from "react";
+import dateformat from "dateformat";
 
 export default function Page() {
-  const { theme, setTheme } = useTheme();
+  const { getallSecrets, secrets } = useSecretData();
+  const { setSelectedSecret } = useSecretData();
+
+  useEffect(() => {
+    getallSecrets();
+  }, [getallSecrets]);
   return (
     <SidebarProvider
       className=" bg-white/5`"
@@ -47,67 +42,63 @@ export default function Page() {
             ConfessIt
           </div>
           <div className=" flex justify-end items-center flex-row w-full gap-3">
-            <Button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              variant="outline"
-              size="icon"
-              className={cn(
-                "transition-transform duration-300 ease-in-out bg-transparent border-none"
-              )}
-            >
-              {theme === "dark" ? (
-                <Sun className="h-5 w-5 text-yellow-500" />
-              ) : (
-                <Moon className="h-5 w-5 text-gray-800" />
-              )}
-            </Button>
+            <ThemeSwitcher />
             <SidebarTrigger className="-ml-1" />
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col gap-2 p-4 bg-white/5">
-          {dummyData.secrets.map((secret, index) => (
-            // <div
-            //   key={index}
-            //   className="aspect-video h-12 w-full rounded-lg bg-muted/50"
-            // />
-            <div key={index}>
-              <Accordion
-                type="single"
-                collapsible
-                className=" mx-2 px-3 py-2 border border-white/5"
+        <div className="flex flex-1 flex-col gap-4 p-4 dark:bg-bgMain">
+          <Accordion type="single" collapsible>
+            {secrets.map((secret, index) => (
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="border dark:border-white/10 shadow-sm my-2"
+                onClick={() => {
+                  setSelectedSecret(secret);
+                }}
               >
-                <AccordionItem value="item-1" className=" border-none">
-                  <AccordionTrigger>
-                    <div className=" w-full flex justify-between items-center">
-                      <span className=" font-inter font-light text-sm">
-                        {secret.title}
-                      </span>
+                <AccordionTrigger className="p-2">
+                  <div className="flex justify-between items-center w-full px-2">
+                    <span className="font-inter font-light text-sm">
+                      {secret.title}
+                    </span>
 
-                      <div className=" flex items-center justify-center">
-                        <div className=" flex flex-row items-center">
-                          <span className=" text-white/40 px-1 text-xs font-inter">
-                            12
-                          </span>
-                          <MessageCircle size={11} className=" text-white/40" />
-                        </div>
-                        <Separator
-                          orientation="vertical"
-                          className=" h-3  bg-white/40 ml-2"
-                        />
-                        <span className=" text-white/40 text-xs font-inter font-light mx-3">
-                          {dateFormat(secret.createdAt, "fullDate")}
-                        </span>
+                    <div className="flex items-center space-x-2">
+                      <div className=" flex items-center ">
+                        <ArrowUp size={18} />
+                        <ArrowDown size={18} />
                       </div>
+                      <Separator
+                        orientation="vertical"
+                        className="h-3 dark:bg-white/40 bg-black/50"
+                      />
+                      <div className="flex items-center space-x-2">
+                        <span className="dark:text-white/40 text-sm font-light font-inter">
+                          {secret.comments.length}
+                        </span>
+                        <MessageCircle
+                          size={12}
+                          className="dark:text-white/40"
+                        />
+                      </div>
+                      <Separator
+                        orientation="vertical"
+                        className="h-3 dark:bg-white/40 bg-black/50"
+                      />
+                      <span className="dark:text-white/40 text-xs font-inter font-light">
+                        {/* {new Date(secret.createdAt).toISOString().split("T")[0]} */}
+                        {dateformat(secret.createdAt, "fullDate")}
+                      </span>
                     </div>
-                  </AccordionTrigger>
-                  <AccordionContent className=" py-2 text-xs font font-inter font-light">
-                    {secret.secretContent}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-          ))}
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="py-2 px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2">
+                  {secret.secretContent}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </SidebarInset>
       <AppSidebar />

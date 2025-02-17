@@ -93,7 +93,11 @@ const getAllSecrets = createEndpoint(
     method: "GET",
   },
   async () => {
-    const allSecrets = await prisma.secret.findMany();
+    const allSecrets = await prisma.secret.findMany({
+      include: {
+        comments: true,
+      },
+    });
 
     return {
       data: allSecrets,

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import dateFormat from "dateformat";
 
 import {
   Sidebar,
@@ -13,19 +14,30 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Send } from "lucide-react";
+import useSecretData from "@/store/secret.store";
+import { useState } from "react";
 
 <AppSidebar />;
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { selectedSecret } = useSecretData();
+  const [comment, setComment] = useState<string>();
+
+  const { createComment } = useSecretData();
+
   return (
     <Sidebar
       side="right"
       collapsible="icon"
       className="overflow-hidden [&>[data-sidebar=sidebar]]:flex-row "
       {...props}
+      // Comments
     >
-      <Sidebar collapsible="none" className="hidden flex-1 md:flex bg-bgMain">
-        <SidebarHeader className="gap-3.5 border-b p-4 bg-white/5">
+      <Sidebar
+        collapsible="none"
+        className="hidden flex-1 md:flex dark:bg-bgMain bg-white"
+      >
+        <SidebarHeader className="gap-3 border-b px-4 pt-4 dark:bg-white/5">
           <div className="flex w-full items-center justify-between ">
             <div className="text-base font-medium text-foreground ">
               Comments
@@ -35,44 +47,44 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarContent>
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
-              {/* {mails.map((mail) => ( */}
-              <a
-                href="#"
-                // key={mail.email}
-                className="flex flex-col items-start gap-2 whitespace-nowrap border-b p-4 text-sm leading-tight last:border-b-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-              >
-                <div className="flex w-full items-center gap-2">
-                  <span>This is my secret</span>{" "}
-                  <span className="ml-auto text-xs">Jan 24, 2025</span>
-                </div>
-                {/* <span className="font-medium">anonymous</span> */}
-                <span className="line-clamp-4 whitespace-break-spaces text-xs">
-                  {/* {mail.teaser} */}
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Vestibulum sed est sed sapien pellentesque tempor id vel nibh.
-                  Vivamus tristique porta aliquam. Fusce in maximus magna. Etiam
-                  maximus vel ipsum id condimentum. Praesent quis enim egestas
-                  risus ullamcorper pretium id id magna. Mauris lacinia ex ante,
-                  a interdum erat eleifend vitae. Vestibulum tincidunt iaculis
-                  turpis, iaculis rutrum turpis lobortis a. Nulla rutrum dapibus
-                  cursus. Ut a arcu mollis, sodales tortor a, dignissim urna.
-                  Quisque nec quam lacus. Aenean arcu diam, molestie vitae
-                  rutrum et, tincidunt pretium lorem. Cras et lorem hendrerit,
-                  porta risus sed, rutrum erat. Integer in efficitur sem, quis
-                  efficitur arcu. Mauris condimentum aliquet iaculis.
-                </span>
-
-                <hr className=" bg-white" />
-              </a>
-              {/* ))} */}
+              {selectedSecret?.comments.map((each, index) => {
+                return (
+                  <a
+                    key={index}
+                    href="#"
+                    // key={mail.email}
+                    className="flex py-2 flex-col items-start whitespace-nowrap border-b px-4 text-sm leading-tight last:border-b-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  >
+                    <div className="flex w-full items-center py-1">
+                      <span className=" text-xs">
+                        {dateFormat(each.createdAt, "shortDate")}
+                      </span>
+                    </div>
+                    <span className="whitespace-break-spaces text-xs">
+                      {each.commentContent}
+                    </span>
+                    <hr className=" border-white/5 border" />
+                  </a>
+                );
+              })}
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
 
         <SidebarFooter className="gap-3.5 border-t p-4">
           <div className="flex w-full gap-2 items-center justify-between ">
-            <Input placeholder=" comment here" />
-            <Button className="  p-3">
+            <Input
+              onChange={(e) => {
+                setComment(e.target.value);
+              }}
+              placeholder=" comment here"
+            />
+            <Button
+              onClick={() => {
+                createComment(comment as string, selectedSecret?.id as number);
+              }}
+              className="  p-3"
+            >
               <Send className=" size-9" />
             </Button>
           </div>
