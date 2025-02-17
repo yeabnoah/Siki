@@ -20,10 +20,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       className="overflow-hidden [&>[data-sidebar=sidebar]]:flex-row "
       {...props}
     >
-      <Sidebar collapsible="none" className="hidden flex-1 md:flex">
-        <SidebarHeader className="gap-3.5 border-b p-4">
-          <div className="flex w-full items-center justify-between">
-            <div className="text-base font-medium text-foreground">
+      <Sidebar collapsible="none" className="hidden flex-1 md:flex bg-bgMain">
+        <SidebarHeader className="gap-3.5 border-b p-4 bg-white/5">
+          <div className="flex w-full items-center justify-between ">
+            <div className="text-base font-medium text-foreground ">
               Comments
             </div>
           </div>
@@ -42,7 +42,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="ml-auto text-xs">Jan 24, 2025</span>
                 </div>
                 {/* <span className="font-medium">anonymous</span> */}
-                <span className="line-clamp-2 w-[260px] whitespace-break-spaces text-xs">
+                <span className="line-clamp-4 whitespace-break-spaces text-xs">
                   {/* {mail.teaser} */}
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                   Vestibulum sed est sed sapien pellentesque tempor id vel nibh.
@@ -57,6 +57,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   porta risus sed, rutrum erat. Integer in efficitur sem, quis
                   efficitur arcu. Mauris condimentum aliquet iaculis.
                 </span>
+
+                <hr className=" bg-white" />
               </a>
               {/* ))} */}
             </SidebarGroupContent>

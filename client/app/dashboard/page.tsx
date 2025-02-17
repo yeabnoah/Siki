@@ -17,6 +17,7 @@ import { MessageCircle } from "lucide-react";
 export default function Page() {
   return (
     <SidebarProvider
+      className=" bg-white/5"
       style={
         {
           "--sidebar-width": "380px",
@@ -24,13 +25,13 @@ export default function Page() {
       }
     >
       <SidebarInset>
-        <header className="sticky justify-between items-center top-0 flex shrink-0 items-center gap-2 border-b bg-background p-4">
+        <header className="sticky justify-between items-center top-0 flex shrink-0 items-center bg-white/5 gap-2 border-b p-4">
           <div></div>
 
           <SidebarTrigger className="-ml-1" />
         </header>
 
-        <div className="flex flex-1 flex-col gap-2 p-4">
+        <div className="flex flex-1 flex-col gap-2 p-4 bg-white/5">
           {dummyData.secrets.map((secret, index) => (
             // <div
             //   key={index}
