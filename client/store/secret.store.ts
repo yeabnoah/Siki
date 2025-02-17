@@ -60,9 +60,7 @@ const useSecretData = create<SecretStoreInterface>((set, get) => ({
   },
 
   createSecret: async (secret) => {
-    const prompt = `give me 1 to 3 word title for the following secret. the title should be catchy and also precise and also genune not like some tv show script but personal taste, here is the secret : ${secret}
-     
-    your response should be a word , phrase or sentence no other fluff is needed"
+    const prompt = `please generate a title for the following secret. the title should be hook phrase like "I'm done with school", give me a single string of phrase .. which i can directly use :: here is the secret : ${secret} "
 
     `;
     const title = await model.generateContent(prompt);

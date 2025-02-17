@@ -24,19 +24,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { selectedSecret, createComment } = useSecretData();
   const [comment, setComment] = useState<string>();
 
-  useEffect(() => {}, [selectedSecret]);
+  useEffect(() => { }, [selectedSecret]);
 
   return (
     <Sidebar
       side="right"
       collapsible="icon"
-      className="overflow-hidden [&>[data-sidebar=sidebar]]:flex-row "
+      className="overflow-hidden [&>[data-sidebar=sidebar]]:flex-row hidden md:block"
       {...props}
-      // Comments
     >
       <Sidebar
         collapsible="none"
-        className="hidden flex-1 md:flex dark:bg-bgMain bg-white"
+        className="flex-1 flex dark:bg-bgMain bg-white"
       >
         <SidebarHeader className="gap-3 border-b px-4 pt-4 dark:bg-white/5">
           <div className="flex w-full items-center justify-between ">
@@ -48,6 +47,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarContent>
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
+              {!selectedSecret && (
+                <div className=" flex items-center justify-center my-auto min-h-[70vh]">
+                  No selected Secret
+                </div>
+              )}
+              {(selectedSecret?.comments.length as number) <= 0 && (
+                <div className="flex items-center justify-center my-auto min-h-[70vh]">
+                  No comment Found
+                </div>
+              )}
               {selectedSecret?.comments.map((each, index) => {
                 return (
                   <a
@@ -83,6 +92,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <Button
               onClick={() => {
                 createComment(comment as string, selectedSecret?.id as number);
+                setComment("");
               }}
               className="  p-3"
             >
