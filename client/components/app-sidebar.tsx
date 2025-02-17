@@ -16,14 +16,15 @@ import { Button } from "./ui/button";
 import { Send } from "lucide-react";
 import useSecretData from "@/store/secret.store";
 import { useState } from "react";
+import { useEffect } from "react";
 
 <AppSidebar />;
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { selectedSecret } = useSecretData();
+  const { selectedSecret, createComment } = useSecretData();
   const [comment, setComment] = useState<string>();
 
-  const { createComment } = useSecretData();
+  useEffect(() => {}, [selectedSecret]);
 
   return (
     <Sidebar

@@ -20,12 +20,13 @@ import { useEffect } from "react";
 import dateformat from "dateformat";
 
 export default function Page() {
-  const { getallSecrets, secrets } = useSecretData();
-  const { setSelectedSecret } = useSecretData();
+  const { getallSecrets, secrets, setSelectedSecret, selectedSecret } =
+    useSecretData();
+  // const { } = useSecretData();
 
   useEffect(() => {
     getallSecrets();
-  }, [getallSecrets]);
+  }, [getallSecrets, selectedSecret]);
   return (
     <SidebarProvider
       className=" bg-white/5`"

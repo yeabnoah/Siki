@@ -28,7 +28,7 @@ interface SecretStoreInterface {
   setSelectedSecret: (secret: SecretInterface) => void;
 }
 
-const useSecretData = create<SecretStoreInterface>((set) => ({
+const useSecretData = create<SecretStoreInterface>((set, get) => ({
   secrets: [],
   selectedSecret: null,
   comments: [],
@@ -57,19 +57,64 @@ const useSecretData = create<SecretStoreInterface>((set) => ({
   },
 
   createComment: async (comment, secretId) => {
-    const response = await axiosInstance.post(`/comment/create/${secretId}`, {
+    // Optimistically update the local state
+    const newComment: CommentInterface = {
       commentContent: comment,
+      createdAt: new Date(),
+    };
+
+    set((state) => {
+      if (!state.selectedSecret) return state;
+
+      const updatedSelectedSecret: SecretInterface = {
+        ...state.selectedSecret,
+        comments: [...state.selectedSecret.comments, newComment],
+      };
+
+      return {
+        selectedSecret: updatedSelectedSecret,
+        secrets: state.secrets.map((secret) =>
+          secret.id === secretId
+            ? { ...secret, comments: [...secret.comments, newComment] }
+            : secret
+        ),
+      };
     });
 
-    console.log(response.data);
+    try {
+      const response = await axiosInstance.post(`/comment/create/${secretId}`, {
+        commentContent: comment,
+      });
+      console.log(response.data);
+      get().getallSecrets();
+    } catch (error) {
+      console.error("Failed to create comment:", error);
 
-    // set((state) => ({
-    //   secrets: state.secrets.map((secret) =>
-    //     secret === state.secrets[secretId]
-    //       ? { ...secret, comments: [...secret.comments, newComment] }
-    //       : secret
-    //   ),
-    // }));
+      set((state) => {
+        if (!state.selectedSecret) return state;
+
+        const updatedSelectedSecret: SecretInterface = {
+          ...state.selectedSecret,
+          comments: state.selectedSecret.comments.filter(
+            (c) => c.commentContent !== comment
+          ),
+        };
+
+        return {
+          selectedSecret: updatedSelectedSecret,
+          secrets: state.secrets.map((secret) =>
+            secret.id === secretId
+              ? {
+                  ...secret,
+                  comments: secret.comments.filter(
+                    (c) => c.commentContent !== comment
+                  ),
+                }
+              : secret
+          ),
+        };
+      });
+    }
   },
 }));
 
