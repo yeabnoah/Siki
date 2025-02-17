@@ -42,7 +42,7 @@ export default function Page() {
               <Accordion
                 type="single"
                 collapsible
-                className=" mx-2 px-3 py-2 rounded bg-white/5"
+                className=" mx-2 px-3 py-2 rounded border-b border-white/20 bg-white/5"
               >
                 <AccordionItem value="item-1" className=" border-none">
                   <AccordionTrigger>
@@ -64,7 +64,7 @@ export default function Page() {
                       </div>
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className=" py-2 text-sm">
+                  <AccordionContent className=" py-2 text-xs font-inter font-light">
                     {secret.secretContent}
                   </AccordionContent>
                 </AccordionItem>

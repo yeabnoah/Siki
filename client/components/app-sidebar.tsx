@@ -5,10 +5,14 @@ import * as React from "react";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
 } from "@/components/ui/sidebar";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { Send } from "lucide-react";
 
 <AppSidebar />;
 
@@ -64,6 +68,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
+
+        <SidebarFooter className="gap-3.5 border-t p-4">
+          <div className="flex w-full gap-2 items-center justify-between ">
+            <Input placeholder=" comment here" />
+            <Button className="  p-3">
+              <Send className=" size-9" />
+            </Button>
+          </div>
+        </SidebarFooter>
       </Sidebar>
     </Sidebar>
   );
