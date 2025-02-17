@@ -68,6 +68,7 @@ export default function Page() {
             <Button
               onClick={() => {
                 createSecret(secret as string);
+                setShow(false);
               }}
               variant="outline"
               className=" text-sm bg-bgMain my-2 rounded-none"

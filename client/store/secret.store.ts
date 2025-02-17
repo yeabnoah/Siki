@@ -1,5 +1,9 @@
 import axiosInstance from "@/lib/axios-instance";
 import { create } from "zustand";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 type CommentInterface = {
   commentContent: string;
@@ -24,12 +28,24 @@ interface SecretStoreInterface {
   getallSecrets: () => Promise<void>;
 
   setSelectedSecret: (secret: SecretInterface) => void;
+  geminiCall: () => Promise<void>;
+  isAiFetching: boolean;
 }
 
 const useSecretData = create<SecretStoreInterface>((set, get) => ({
   secrets: [],
   selectedSecret: null,
   comments: [],
+  isAiFetching: false,
+
+  geminiCall: async () => {
+    set({ isAiFetching: true });
+    console.log("------------------------------");
+    // const result = await model.generateContent(prompt);
+    // console.log(result.response.text());
+    console.log("------------------------------");
+    set({ isAiFetching: false });
+  },
 
   setSelectedSecret: (secret: SecretInterface) => {
     set({ selectedSecret: secret });
@@ -44,11 +60,18 @@ const useSecretData = create<SecretStoreInterface>((set, get) => ({
   },
 
   createSecret: async (secret) => {
+    const prompt = `give me 1 to 3 word title for the following secret. the title should be catchy and also precise and also genune not like some tv show script but personal taste, here is the secret : ${secret}
+     
+    your response should be a word , phrase or sentence no other fluff is needed"
+
+    `;
+    const title = await model.generateContent(prompt);
     const response = await axiosInstance.post("/secret/create", {
       secretContent: secret,
-      title: "test",
+      title: title.response.text(),
     });
 
+    get().getallSecrets();
     console.log(response);
   },
 
