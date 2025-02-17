@@ -18,9 +18,7 @@ interface SecretStoreInterface {
   secrets: SecretInterface[];
   selectedSecret: SecretInterface | null;
   comments: CommentInterface[];
-  createSecret: (
-    secret: Omit<SecretInterface, "createdAt" | "comments">
-  ) => void;
+  createSecret: (secret: string) => Promise<void>;
   createComment: (comment: string, secretId: number) => void;
 
   getallSecrets: () => Promise<void>;
@@ -45,19 +43,16 @@ const useSecretData = create<SecretStoreInterface>((set, get) => ({
     console.log("secret fetched ", allSecrets.data.data);
   },
 
-  createSecret: (secret) => {
-    const newSecret: SecretInterface = {
-      ...secret,
-      createdAt: new Date(),
-      comments: [],
-    };
-    set((state) => ({
-      secrets: [...state.secrets, newSecret],
-    }));
+  createSecret: async (secret) => {
+    const response = await axiosInstance.post("/secret/create", {
+      secretContent: secret,
+      title: "test",
+    });
+
+    console.log(response);
   },
 
   createComment: async (comment, secretId) => {
-    // Optimistically update the local state
     const newComment: CommentInterface = {
       commentContent: comment,
       createdAt: new Date(),

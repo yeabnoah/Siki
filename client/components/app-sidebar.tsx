@@ -90,6 +90,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </Button>
           </div>
         </SidebarFooter>
+        {/* <Sidebar className=" w-10"></Sidebar> */}
       </Sidebar>
     </Sidebar>
   );
