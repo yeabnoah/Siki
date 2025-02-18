@@ -8,6 +8,7 @@ import {
   Instrument_Serif,
 } from "next/font/google";
 import "./globals.css";
+import { Spotlight } from "@/components/ui/spotlight";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,7 +54,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${inter.variable} ${InstrumentSerif.variable} antialiased font-inter font-light`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          {/* <Spotlight
+            className="-top-40 left-0 md:left-60 md:-top-20"
+            fill="white"
+          /> */}
+          {children}</Providers>
       </body>
     </html>
   );

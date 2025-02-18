@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
+import { Spotlight } from "@/components/ui/spotlight";
 // import { BiDownvote, BiUpvote } from "react-icons/bi";
 
 export default function Page() {
@@ -43,11 +44,18 @@ export default function Page() {
   const [secret, setSecret] = useState<string>();
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [mobileComment, setMobileComment] = useState<string>("");
-  // const { } = useSecretData();
+  const [textareaHeight, setTextareaHeight] = useState("60px");
 
   useEffect(() => {
     getallSecrets();
   }, [getallSecrets, selectedSecret]);
+
+  const handleTextAreaInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setSecret(e.target.value);
+    e.target.style.height = "auto";
+    e.target.style.height = `${e.target.scrollHeight}px`;
+  };
+
   return (
     <SidebarProvider
       className=" bg-white/5`"
@@ -57,11 +65,12 @@ export default function Page() {
         } as React.CSSProperties
       }
     >
+      {/* <Spotlight /> */}
       <SidebarInset>
         <header className="sticky justify-between  top-0 flex shrink-0 items-center bg-white/5 gap-2 border-b p-4">
-          <div className=" flex items-center gap-2 font-instrument text-xl">
-            <Mic2Icon />
-            ConfessIt
+          <div className=" flex items-center gap-2 font-instrument text-2xl dark:text-white/80  mx-2">
+            {/* <Mic2Icon /> */}
+            Wishper
           </div>
           <div className=" flex justify-end items-center flex-row w-full gap-3">
             <ThemeSwitcher />
@@ -73,12 +82,10 @@ export default function Page() {
           <div className={` ${!show && "hidden"}`}>
             <Textarea
               value={secret}
-              onChange={(e) => {
-                setSecret(e.target.value);
-              }}
-              placeholder=" write your secret here ... "
-              className=" rounded-none text-xs textarea"
-              // style={{ fieldSizing: "content" }}
+              onChange={handleTextAreaInput}
+              placeholder="write your secret here ..."
+              className="rounded-none text-xs textarea min-h-[60px] transition-all duration-200 resize-none overflow-hidden placeholder:font-instrument placeholder:text-lg"
+              style={{ height: textareaHeight }}
             />
 
             <Button
@@ -124,13 +131,12 @@ export default function Page() {
                             upvoteSecret(secret.id as number);
                           }}
                           aria-disabled={!!hasVoted(secret.id as number)}
-                          className={`flex items-center space-x-1 transition-colors ${
-                            hasVoted(secret.id as number) === "upvote"
-                              ? "text-green-500 cursor-not-allowed"
-                              : hasVoted(secret.id as number)
+                          className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "upvote"
+                            ? "text-green-500 cursor-not-allowed"
+                            : hasVoted(secret.id as number)
                               ? "text-gray-400 cursor-not-allowed"
                               : "hover:text-green-500 cursor-pointer"
-                          }`}
+                            }`}
                         >
                           <BiUpvote className="size-4" />
                           <span className="text-xs">{secret.upvote || 0}</span>
@@ -142,13 +148,12 @@ export default function Page() {
                             downvoteSecret(secret.id as number);
                           }}
                           aria-disabled={!!hasVoted(secret.id as number)}
-                          className={`flex items-center space-x-1 transition-colors ${
-                            hasVoted(secret.id as number) === "downvote"
-                              ? "text-red-500 cursor-not-allowed"
-                              : hasVoted(secret.id as number)
+                          className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "downvote"
+                            ? "text-red-500 cursor-not-allowed"
+                            : hasVoted(secret.id as number)
                               ? "text-gray-400 cursor-not-allowed"
                               : "hover:text-red-500 cursor-pointer"
-                          }`}
+                            }`}
                         >
                           <BiDownvote className="size-4" />
                           <span className="text-xs">
@@ -183,9 +188,8 @@ export default function Page() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent
-                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${
-                    isCommentOpen ? "hidden md:block" : ""
-                  }`}
+                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${isCommentOpen ? "hidden md:block" : ""
+                    }`}
                 >
                   {secret.secretContent}
                 </AccordionContent>
@@ -207,14 +211,14 @@ export default function Page() {
           <SheetContent side="bottom" className="h-[80vh] p-0 z-50">
             <SheetHeader className="border-b p-4 dark:bg-white/5">
               <div className="flex items-center justify-between">
-                <SheetTitle>Comments</SheetTitle>
-                <Button
+                <SheetTitle className=" font-instrument">Comments</SheetTitle>
+                {/* <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsCommentOpen(false)}
                 >
                   <X className="h-4 w-4" />
-                </Button>
+                </Button> */}
               </div>
             </SheetHeader>
             <div className="flex flex-col h-full">

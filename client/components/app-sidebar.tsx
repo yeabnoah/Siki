@@ -24,7 +24,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { selectedSecret, createComment } = useSecretData();
   const [comment, setComment] = useState<string>();
 
-  useEffect(() => {}, [selectedSecret]);
+  useEffect(() => { }, [selectedSecret]);
 
   return (
     <Sidebar
@@ -53,7 +53,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </div>
               )}
               {(selectedSecret?.comments.length as number) <= 0 && (
-                <div className="flex items-center justify-center my-auto min-h-[70vh]">
+                <div className="flex items-center font-instrument text-xl justify-center my-auto min-h-[70vh]">
                   No comment Found
                 </div>
               )}
@@ -89,13 +89,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 setComment(e.target.value);
               }}
               placeholder=" comment here"
+              className=" placeholder:font-instrument  placeholder:text-lg"
             />
             <Button
               onClick={() => {
                 createComment(comment as string, selectedSecret?.id as number);
                 setComment("");
               }}
-              className="  p-3"
+              className="  p-3 "
             >
               <Send className=" size-9" />
             </Button>
