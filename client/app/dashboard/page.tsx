@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
+import { BiDownvote, BiUpvote } from "react-icons/bi";
 // import { BiDownvote, BiUpvote } from "react-icons/bi";
 
 export default function Page() {
@@ -34,6 +35,9 @@ export default function Page() {
     selectedSecret,
     createSecret,
     createComment,
+    upvoteSecret,
+    downvoteSecret,
+    hasVoted,
   } = useSecretData();
   const [show, setShow] = useState<boolean>();
   const [secret, setSecret] = useState<string>();
@@ -74,7 +78,7 @@ export default function Page() {
               }}
               placeholder=" write your secret here ... "
               className=" rounded-none text-xs textarea"
-              // style={{ fieldSizing: "content" }}
+            // style={{ fieldSizing: "content" }}
             />
 
             <Button
@@ -107,15 +111,52 @@ export default function Page() {
               >
                 <AccordionTrigger className="p-2">
                   <div className="flex justify-between items-center w-full md:px-2 pr-1">
-                    <span className="  font-light text-xs md:text-sm font-inter">
+                    <span className="font-light text-xs md:text-sm font-inter">
                       {secret.title}
                     </span>
 
                     <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-3">
+                        <div
+                          role="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            upvoteSecret(secret.id as number);
+                          }}
+                          aria-disabled={!!hasVoted(secret.id as number)}
+                          className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === 'upvote'
+                            ? 'text-green-500 cursor-not-allowed'
+                            : hasVoted(secret.id as number)
+                              ? 'text-gray-400 cursor-not-allowed'
+                              : 'hover:text-green-500 cursor-pointer'
+                            }`}
+                        >
+                          <BiUpvote className="size-4" />
+                          <span className="text-xs">{secret.upvote || 0}</span>
+                        </div>
+                        <div
+                          role="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            downvoteSecret(secret.id as number);
+                          }}
+                          aria-disabled={!!hasVoted(secret.id as number)}
+                          className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === 'downvote'
+                            ? 'text-red-500 cursor-not-allowed'
+                            : hasVoted(secret.id as number)
+                              ? 'text-gray-400 cursor-not-allowed'
+                              : 'hover:text-red-500 cursor-pointer'
+                            }`}
+                        >
+                          <BiDownvote className="size-4" />
+                          <span className="text-xs">{secret.downvote || 0}</span>
+                        </div>
+                      </div>
+
                       <div
                         className="flex items-center space-x-2"
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent AccordionItem click
+                          e.stopPropagation();
                           setSelectedSecret(secret);
                           if (window.innerWidth < 768) {
                             setIsCommentOpen(true);
@@ -138,9 +179,8 @@ export default function Page() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent
-                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${
-                    isCommentOpen ? "hidden md:block" : ""
-                  }`}
+                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${isCommentOpen ? "hidden md:block" : ""
+                    }`}
                 >
                   {secret.secretContent}
                 </AccordionContent>

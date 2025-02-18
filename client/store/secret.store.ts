@@ -16,7 +16,12 @@ type SecretInterface = {
   secretContent: string;
   createdAt: Date;
   comments: CommentInterface[];
+  upvote: number;
+  downvote: number;
 };
+
+type VoteType = 'upvote' | 'downvote';
+type VoteRecord = Record<number, VoteType>;
 
 interface SecretStoreInterface {
   secrets: SecretInterface[];
@@ -30,6 +35,9 @@ interface SecretStoreInterface {
   setSelectedSecret: (secret: SecretInterface) => void;
   geminiCall: () => Promise<void>;
   isAiFetching: boolean;
+  upvoteSecret: (secretId: number) => Promise<void>;
+  downvoteSecret: (secretId: number) => Promise<void>;
+  hasVoted: (secretId: number) => VoteType | null;
 }
 
 const useSecretData = create<SecretStoreInterface>((set, get) => ({
@@ -130,6 +138,93 @@ const useSecretData = create<SecretStoreInterface>((set, get) => ({
           ),
         };
       });
+    }
+  },
+
+  hasVoted: (secretId: number) => {
+    const votes = JSON.parse(localStorage.getItem('secretVotes') || '{}') as VoteRecord;
+    return votes[secretId] || null;
+  },
+
+  upvoteSecret: async (secretId: number) => {
+    try {
+      const previousVote = get().hasVoted(secretId);
+      const votes = JSON.parse(localStorage.getItem('secretVotes') || '{}') as VoteRecord;
+      
+      // If previously downvoted, remove the downvote first
+      if (previousVote === 'downvote') {
+        set((state) => ({
+          secrets: state.secrets.map((secret) =>
+            secret.id === secretId
+              ? { ...secret, downvote: Math.max(0, secret.downvote - 1) }
+              : secret
+          ),
+        }));
+        await axiosInstance.post(`/secret/remove-vote/${secretId}`, { voteType: 'downvote' });
+      }
+
+      // Add the upvote (whether it was previously upvoted or not)
+      votes[secretId] = 'upvote';
+      localStorage.setItem('secretVotes', JSON.stringify(votes));
+
+      set((state) => ({
+        secrets: state.secrets.map((secret) =>
+          secret.id === secretId
+            ? { 
+                ...secret, 
+                upvote: previousVote !== 'upvote' ? secret.upvote + 1 : secret.upvote 
+              }
+            : secret
+        ),
+      }));
+
+      if (previousVote !== 'upvote') {
+        await axiosInstance.post(`/secret/upvote/${secretId}`);
+      }
+    } catch (error) {
+      console.error("Failed to upvote:", error);
+      await get().getallSecrets();
+    }
+  },
+
+  downvoteSecret: async (secretId: number) => {
+    try {
+      const previousVote = get().hasVoted(secretId);
+      const votes = JSON.parse(localStorage.getItem('secretVotes') || '{}') as VoteRecord;
+      
+      // If previously upvoted, remove the upvote first
+      if (previousVote === 'upvote') {
+        set((state) => ({
+          secrets: state.secrets.map((secret) =>
+            secret.id === secretId
+              ? { ...secret, upvote: Math.max(0, secret.upvote - 1) }
+              : secret
+          ),
+        }));
+        await axiosInstance.post(`/secret/remove-vote/${secretId}`, { voteType: 'upvote' });
+      }
+
+      // Add the downvote (whether it was previously downvoted or not)
+      votes[secretId] = 'downvote';
+      localStorage.setItem('secretVotes', JSON.stringify(votes));
+
+      set((state) => ({
+        secrets: state.secrets.map((secret) =>
+          secret.id === secretId
+            ? { 
+                ...secret, 
+                downvote: previousVote !== 'downvote' ? secret.downvote + 1 : secret.downvote 
+              }
+            : secret
+        ),
+      }));
+
+      if (previousVote !== 'downvote') {
+        await axiosInstance.post(`/secret/downvote/${secretId}`);
+      }
+    } catch (error) {
+      console.error("Failed to downvote:", error);
+      await get().getallSecrets();
     }
   },
 }));

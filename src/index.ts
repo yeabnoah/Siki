@@ -1,4 +1,4 @@
-import { PrismaClient } from ".prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { createEndpoint, createRouter } from "better-call";
 import { z } from "zod";
 
@@ -45,6 +45,77 @@ const createSecret = createEndpoint(
       return {
         data: null,
         message: "error happened while creating secret",
+        success: false,
+        error: err,
+      };
+    }
+  }
+);
+
+const upvote = createEndpoint(
+  "/secret/upvote/:id",
+  {
+    method: "POST",
+  },
+  async (ctx) => {
+    try {
+      // const test =
+      const updatedSecret = await prisma.secret.update({
+        where: {
+          id: Number(ctx.params.id),
+        },
+        data: {
+          upvote: {
+            increment: 1,
+          },
+        },
+      });
+
+      return {
+        data: updatedSecret,
+        message: "upvoted successfully",
+        success: true,
+        error: null,
+      };
+    } catch (err) {
+      return {
+        data: null,
+        message: "error happened while upvoting",
+        success: false,
+        error: err,
+      };
+    }
+  }
+);
+
+const downvote = createEndpoint(
+  "/secret/downvote/:id",
+  {
+    method: "POST",
+  },
+  async (ctx) => {
+    try {
+      const updatedSecret = await prisma.secret.update({
+        where: {
+          id: Number(ctx.params.id),
+        },
+        data: {
+          downvote: {
+            increment: 1,
+          },
+        },
+      });
+
+      return {
+        data: updatedSecret,
+        message: "downvoted successfully",
+        success: true,
+        error: null,
+      };
+    } catch (err) {
+      return {
+        data: null,
+        message: "error happened while downvoting",
         success: false,
         error: err,
       };
@@ -141,6 +212,52 @@ const getSecretById = createEndpoint(
   }
 );
 
+const removeVote = createEndpoint(
+  "/secret/remove-vote/:id",
+  {
+    method: "POST",
+    body: z.object({
+      voteType: z.enum(['upvote', 'downvote']),
+    }),
+  },
+  async (ctx) => {
+    try {
+      const secret = await prisma.secret.findUnique({
+        where: {
+          id: Number(ctx.params.id),
+        },
+      });
+
+      if (!secret) {
+        throw new Error("Secret not found");
+      }
+
+      const updatedSecret = await prisma.secret.update({
+        where: {
+          id: Number(ctx.params.id),
+        },
+        data: {
+          [ctx.body.voteType]: Math.max(0, secret[ctx.body.voteType] - 1),
+        },
+      });
+
+      return {
+        data: updatedSecret,
+        message: "vote removed successfully",
+        success: true,
+        error: null,
+      };
+    } catch (err) {
+      return {
+        data: null,
+        message: "error happened while removing vote",
+        success: false,
+        error: err,
+      };
+    }
+  }
+);
+
 // const deleteSecret = createEndpoint("")
 
 const router = createRouter({
@@ -149,6 +266,9 @@ const router = createRouter({
   createComment,
   getAllSecrets,
   getSecretById,
+  upvote,
+  downvote,
+  removeVote,
 });
 
 Bun.serve({
