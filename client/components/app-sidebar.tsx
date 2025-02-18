@@ -84,6 +84,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarFooter className="gap-3.5 border-t p-4">
           <div className="flex w-full gap-2 items-center justify-between ">
             <Input
+              value={comment}
               onChange={(e) => {
                 setComment(e.target.value);
               }}

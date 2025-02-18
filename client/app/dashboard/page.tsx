@@ -78,7 +78,7 @@ export default function Page() {
               }}
               placeholder=" write your secret here ... "
               className=" rounded-none text-xs textarea"
-            // style={{ fieldSizing: "content" }}
+              // style={{ fieldSizing: "content" }}
             />
 
             <Button
@@ -110,7 +110,7 @@ export default function Page() {
                 }}
               >
                 <AccordionTrigger className="p-2">
-                  <div className="flex justify-between items-center w-full md:px-2 pr-1">
+                  <div className="flex flex-col md:flex md:flex-row md:justify-between gap-1 justify-center md:items-center w-full md:px-2 pr-1">
                     <span className="font-light text-xs md:text-sm font-inter">
                       {secret.title}
                     </span>
@@ -124,12 +124,13 @@ export default function Page() {
                             upvoteSecret(secret.id as number);
                           }}
                           aria-disabled={!!hasVoted(secret.id as number)}
-                          className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === 'upvote'
-                            ? 'text-green-500 cursor-not-allowed'
-                            : hasVoted(secret.id as number)
-                              ? 'text-gray-400 cursor-not-allowed'
-                              : 'hover:text-green-500 cursor-pointer'
-                            }`}
+                          className={`flex items-center space-x-1 transition-colors ${
+                            hasVoted(secret.id as number) === "upvote"
+                              ? "text-green-500 cursor-not-allowed"
+                              : hasVoted(secret.id as number)
+                              ? "text-gray-400 cursor-not-allowed"
+                              : "hover:text-green-500 cursor-pointer"
+                          }`}
                         >
                           <BiUpvote className="size-4" />
                           <span className="text-xs">{secret.upvote || 0}</span>
@@ -141,15 +142,18 @@ export default function Page() {
                             downvoteSecret(secret.id as number);
                           }}
                           aria-disabled={!!hasVoted(secret.id as number)}
-                          className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === 'downvote'
-                            ? 'text-red-500 cursor-not-allowed'
-                            : hasVoted(secret.id as number)
-                              ? 'text-gray-400 cursor-not-allowed'
-                              : 'hover:text-red-500 cursor-pointer'
-                            }`}
+                          className={`flex items-center space-x-1 transition-colors ${
+                            hasVoted(secret.id as number) === "downvote"
+                              ? "text-red-500 cursor-not-allowed"
+                              : hasVoted(secret.id as number)
+                              ? "text-gray-400 cursor-not-allowed"
+                              : "hover:text-red-500 cursor-pointer"
+                          }`}
                         >
                           <BiDownvote className="size-4" />
-                          <span className="text-xs">{secret.downvote || 0}</span>
+                          <span className="text-xs">
+                            {secret.downvote || 0}
+                          </span>
                         </div>
                       </div>
 
@@ -179,8 +183,9 @@ export default function Page() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent
-                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${isCommentOpen ? "hidden md:block" : ""
-                    }`}
+                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${
+                    isCommentOpen ? "hidden md:block" : ""
+                  }`}
                 >
                   {secret.secretContent}
                 </AccordionContent>
