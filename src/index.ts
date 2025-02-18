@@ -273,7 +273,7 @@ const router = createRouter({
 
 Bun.serve({
   fetch: router.handler,
-  port: 3000,
+  port: 7000,
 });
 
 console.log("Server running on http://localhost:3000");
