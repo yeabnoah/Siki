@@ -24,7 +24,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { selectedSecret, createComment } = useSecretData();
   const [comment, setComment] = useState<string>();
 
-  useEffect(() => { }, [selectedSecret]);
+  useEffect(() => {}, [selectedSecret]);
 
   return (
     <Sidebar
@@ -39,7 +39,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       >
         <SidebarHeader className="gap-3 border-b px-4 pt-4 dark:bg-white/5">
           <div className="flex w-full items-center justify-between ">
-            <div className="text-base font-medium text-foreground ">
+            <div className="text-xl font-medium text-foreground font-instrument ">
               Comments
             </div>
           </div>

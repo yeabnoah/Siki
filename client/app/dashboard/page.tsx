@@ -55,7 +55,7 @@ export default function Page() {
     >
       <SidebarInset>
         <header className="sticky justify-between  top-0 flex shrink-0 items-center bg-white/5 gap-2 border-b p-4">
-          <div className=" flex items-center gap-2">
+          <div className=" flex items-center gap-2 font-instrument text-xl">
             <Mic2Icon />
             ConfessIt
           </div>
@@ -74,7 +74,7 @@ export default function Page() {
               }}
               placeholder=" write your secret here ... "
               className=" rounded-none text-xs textarea"
-            // style={{ fieldSizing: "content" }}
+              // style={{ fieldSizing: "content" }}
             />
 
             <Button
@@ -84,7 +84,7 @@ export default function Page() {
                 setSecret("");
               }}
               variant="outline"
-              className=" text-xs md:text-sm py-0  dark:bg-bgMain my-2 text-black/60 dark:text-white/70 rounded-none"
+              className=" text-xs md:text-base py-0  dark:bg-bgMain my-2 text-black/60 dark:text-white/70 rounded-none font-instrument"
             >
               Wishper
             </Button>
@@ -107,7 +107,7 @@ export default function Page() {
               >
                 <AccordionTrigger className="p-2">
                   <div className="flex justify-between items-center w-full md:px-2 pr-1">
-                    <span className="font-inter font-light text-xs md:text-sm">
+                    <span className="  font-light text-xs md:text-sm font-inter">
                       {secret.title}
                     </span>
 
@@ -138,8 +138,9 @@ export default function Page() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent
-                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${isCommentOpen ? 'hidden md:block' : ''
-                    }`}
+                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${
+                    isCommentOpen ? "hidden md:block" : ""
+                  }`}
                 >
                   {secret.secretContent}
                 </AccordionContent>
@@ -152,16 +153,13 @@ export default function Page() {
           onClick={() => {
             setShow(!show);
           }}
-          className="group size-11 rounded-none fixed transition-all hover:scale-110 flex hover:bg-white/50 bg-white/70 dark:bg-bgMain dark:hover:bg-bgMain justify-center items-center bottom-5 right-5 border z-10"
+          className="group size-11 rounded-none fixed transition-all hover:scale-110 flex hover:bg-white/50 bg-white/70 dark:bg-bgMain dark:hover:bg-bgMain justify-center items-center bottom-5 right-5 md:right-[400px] border z-10"
         >
           <Plus className="dark:text-white/40 text-black/60" />
         </Button>
 
         <Sheet open={isCommentOpen} onOpenChange={setIsCommentOpen}>
-          <SheetContent
-            side="bottom"
-            className="h-[80vh] p-0 z-50"
-          >
+          <SheetContent side="bottom" className="h-[80vh] p-0 z-50">
             <SheetHeader className="border-b p-4 dark:bg-white/5">
               <div className="flex items-center justify-between">
                 <SheetTitle>Comments</SheetTitle>
@@ -182,7 +180,7 @@ export default function Page() {
                   </div>
                 )}
                 {selectedSecret?.comments.length === 0 && (
-                  <div className="flex items-center justify-center h-full">
+                  <div className="flex items-center justify-center h-full font-instrument">
                     No comments yet
                   </div>
                 )}

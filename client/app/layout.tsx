@@ -1,6 +1,12 @@
 import { Providers } from "@/lib/theme-provider";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter, Playfair_Display } from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Inter,
+  Playfair_Display,
+  Instrument_Serif,
+} from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -8,11 +14,18 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+const InstrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+});
+
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"], // All weights
-  style: ["normal", "italic"], // Include italic styles if available
+  weight: ["400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
 });
 
 const inter = Inter({
@@ -38,7 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${inter.variable} antialiased font-inter font-light`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${inter.variable} ${InstrumentSerif.variable} antialiased font-inter font-light`}
       >
         <Providers>{children}</Providers>
       </body>
