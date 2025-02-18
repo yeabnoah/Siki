@@ -1,56 +1,39 @@
-import React from "react";
-import { cn } from "@/lib/utils";
+"use client";
 
-type SpotlightProps = {
-  className?: string;
-  fill?: string;
-};
+import { useEffect, useRef } from "react";
 
-export const Spotlight = ({ className, fill }: SpotlightProps) => {
+export function Spotlight() {
   return (
-    <svg
-      className={cn(
-        "animate-spotlight pointer-events-none absolute z-[1]  h-[169%] w-[138%] lg:w-[84%] opacity-0",
-        className
-      )}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 3787 2842"
-      fill="none"
-    >
-      <g filter="url(#filter)">
-        <ellipse
-          cx="1924.71"
-          cy="273.501"
-          rx="1924.71"
-          ry="273.501"
-          transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)"
-          fill={fill || "white"}
-          fillOpacity="0.21"
-        ></ellipse>
-      </g>
-      <defs>
-        <filter
-          id="filter"
-          x="0.860352"
-          y="0.838989"
-          width="3785.16"
-          height="2840.26"
-          filterUnits="userSpaceOnUse"
-          colorInterpolationFilters="sRGB"
-        >
-          <feFlood floodOpacity="0" result="BackgroundImageFix"></feFlood>
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="BackgroundImageFix"
-            result="shape"
-          ></feBlend>
-          <feGaussianBlur
-            stdDeviation="151"
-            result="effect1_foregroundBlur_1065_8"
-          ></feGaussianBlur>
-        </filter>
-      </defs>
-    </svg>
+    <>
+      {/* Dark overlay */}
+      <div
+        className="pointer-events-none fixed inset-0 z-20 bg-black/40"
+      />
+
+      {/* Multiple diagonal light beams */}
+      <div
+        className="pointer-events-none fixed inset-0 z-25"
+        style={{
+          background: `
+            linear-gradient(145deg, 
+              transparent 0%,
+              rgba(255, 255, 255, 0.04) 15%,
+              rgba(255, 255, 255, 0.02) 25%,
+              transparent 40%
+            ),
+            linear-gradient(135deg,
+              transparent 20%,
+              rgba(255, 255, 255, 0.03) 35%,
+              transparent 50%
+            ),
+            linear-gradient(165deg,
+              transparent 10%,
+              rgba(255, 255, 255, 0.02) 30%,
+              transparent 60%
+            )
+          `
+        }}
+      />
+    </>
   );
-};
+}
