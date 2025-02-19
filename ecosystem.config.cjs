@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   apps: [{
     name: "whisper",
     script: "./dist/index.js",
