@@ -4,6 +4,19 @@ import { z } from "zod";
 
 const prisma = new PrismaClient();
 
+const corsMiddleware = async (req: Request, next: () => Promise<Response>) => {
+  const response = await next();
+  return new Response(response.body, {
+    ...response,
+    headers: {
+      ...response.headers,
+      'Access-Control-Allow-Origin': '*', 
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
+};
+
 const healthCheck = createEndpoint(
   "/",
   {
@@ -272,8 +285,11 @@ const router = createRouter({
 });
 
 Bun.serve({
-  fetch: router.handler,
+  fetch: async (req) => {
+    // Apply CORS middleware to all requests
+    return corsMiddleware(req, () => router.handler(req));
+  },
   port: 7000,
 });
 
-console.log("Server running on http://localhost:3000");
+console.log("Server running on http://localhost:7000");
