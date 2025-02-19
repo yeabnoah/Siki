@@ -90,7 +90,7 @@ export default function Page() {
 
   return (
     <SidebarProvider
-      className=" bg-white/5`"
+      className="bg-white dark:bg-bgMain"
       style={
         {
           "--sidebar-width": "380px",
@@ -99,35 +99,37 @@ export default function Page() {
     >
       {/* <Spotlight /> */}
       <SidebarInset>
-        <header className="sticky justify-between  top-0 flex shrink-0 items-center bg-white/5 gap-2 border-b p-4">
-          <div className=" flex items-center gap-2 font-instrument text-2xl dark:text-white/80  mx-2">
+        <header className="sticky justify-between top-0 flex shrink-0 items-center bg-white dark:bg-white/5 gap-2 border-b dark:border-white/10 p-4">
+          <div className="flex items-center gap-2 font-instrument text-2xl text-black/80 dark:text-white/80 mx-2">
             {/* <Mic2Icon /> */}
             Wishper
           </div>
-          <div className=" flex justify-end items-center flex-row w-full gap-3">
+          <div className="flex justify-end items-center flex-row w-full gap-3">
             <ThemeSwitcher />
             {/* <SidebarTrigger className="-ml-1" /> */}
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col gap-2 p-4 dark:bg-bgMain">
+        <div className="flex flex-1 flex-col gap-2 p-4 bg-white dark:bg-bgMain">
           {/* <div className={` ${!show && "hidden"}`}> */}
           <Textarea
             value={secret}
             onChange={handleTextAreaInput}
             placeholder="write your secret here ..."
-            className="rounded-none text-xs textarea min-h-[60px] transition-all duration-200 resize-none overflow-hidden placeholder:font-instrument placeholder:text-lg"
+            className="rounded-none text-xs textarea min-h-[60px] transition-all duration-200 resize-none overflow-hidden placeholder:font-instrument placeholder:text-lg bg-white dark:bg-bgMain text-black dark:text-white"
             style={{ height: textareaHeight }}
           />
 
           <Button
             onClick={() => {
-              createSecret(secret as string);
-              // setShow(false);
-              setSecret("");
+              if (secret?.trim()) {
+                createSecret(secret);
+                setSecret("");
+              }
             }}
+            disabled={!secret?.trim()}
             variant="outline"
-            className=" text-xs md:text-base py-0 w-fit  dark:bg-bgMain my-2 text-black/60 dark:text-white/70 rounded-none font-instrument"
+            className="text-xs md:text-base py-0 w-fit bg-white dark:bg-bgMain my-2 text-black/60 dark:text-white/70 rounded-none font-instrument disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Wishper
           </Button>
