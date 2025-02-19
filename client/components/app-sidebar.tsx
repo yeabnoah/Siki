@@ -22,9 +22,27 @@ import { useEffect } from "react";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { selectedSecret, createComment } = useSecretData();
-  const [comment, setComment] = useState<string>();
+  const [comment, setComment] = useState<string>('');
 
   useEffect(() => { }, [selectedSecret]);
+
+  const handleSubmitComment = async () => {
+    if (!selectedSecret || !comment.trim()) return;
+
+    try {
+      await createComment(comment, selectedSecret?.id as number);
+      setComment(''); // Reset the input after successful submission
+    } catch (error) {
+      console.error('Failed to post comment:', error);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmitComment();
+    }
+  };
 
   return (
     <Sidebar
@@ -63,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     key={index}
                     href="#"
                     // key={mail.email}
-                    className="flex py-2 flex-col items-start whitespace-nowrap border-b px-4 text-sm leading-tight last:border-b-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    className="flex py-2 flex-col items-start border-b-[.2px] px-4 text-sm leading-tight last:border-b-0 dark:border-white/5 border-gray-100 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   >
                     <div className="flex w-full items-center py-1">
                       <span className=" text-xs">
@@ -88,17 +106,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               onChange={(e) => {
                 setComment(e.target.value);
               }}
-              placeholder=" comment here"
-              className=" placeholder:font-instrument  placeholder:text-lg"
+              onKeyDown={handleKeyDown}
+              disabled={!selectedSecret}
+              placeholder={selectedSecret ? "comment here" : "Select a secret to comment"}
+              className="border-none rounded-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 placeholder:font-instrument placeholder:text-lg text-base py-2 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <Button
-              onClick={() => {
-                createComment(comment as string, selectedSecret?.id as number);
-                setComment("");
-              }}
-              className="  p-3 "
+              onClick={handleSubmitComment}
+              disabled={!selectedSecret || !comment.trim()}
+              className="p-3 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <Send className=" size-9" />
+              <Send className="size-9" />
             </Button>
           </div>
         </SidebarFooter>

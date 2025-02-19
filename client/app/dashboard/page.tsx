@@ -38,12 +38,13 @@ export default function Page() {
     downvoteSecret,
     hasVoted,
   } = useSecretData();
-  const [show, setShow] = useState<boolean>(true);
+  // const [show, setShow] = useState<boolean>(true);
   const [secret, setSecret] = useState<string>();
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [mobileComment, setMobileComment] = useState<string>("");
   const [textareaHeight, setTextareaHeight] = useState("60px");
   const [isLoading, setIsLoading] = useState(true);
+  const [votingInProgress, setVotingInProgress] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     const fetchSecrets = async () => {
@@ -60,6 +61,42 @@ export default function Page() {
     setSecret(e.target.value);
     e.target.style.height = "auto";
     e.target.style.height = `${e.target.scrollHeight}px`;
+  };
+
+  const handleVote = async (secretId: number, voteType: 'upvote' | 'downvote') => {
+    if (votingInProgress[secretId]) return;
+
+    const secretToUpdate = secrets.find(s => s.id === secretId);
+    if (!secretToUpdate) return;
+
+    if (hasVoted(secretId)) return;
+
+    setVotingInProgress(prev => ({ ...prev, [secretId]: true }));
+
+    try {
+      const updatedSecrets = secrets.map(secret => {
+        if (secret.id === secretId) {
+          return {
+            ...secret,
+            [voteType]: (secret[voteType] || 0) + 1
+          };
+        }
+        return secret;
+      });
+
+      secrets.splice(0, secrets.length, ...updatedSecrets);
+
+      if (voteType === 'upvote') {
+        await upvoteSecret(secretId);
+      } else {
+        await downvoteSecret(secretId);
+      }
+    } catch (error) {
+      await getallSecrets();
+      console.error('Voting failed:', error);
+    } finally {
+      setVotingInProgress(prev => ({ ...prev, [secretId]: false }));
+    }
   };
 
   return (
@@ -84,28 +121,28 @@ export default function Page() {
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 p-4 dark:bg-bgMain">
-          <div className={` ${!show && "hidden"}`}>
-            <Textarea
-              value={secret}
-              onChange={handleTextAreaInput}
-              placeholder="write your secret here ..."
-              className="rounded-none text-xs textarea min-h-[60px] transition-all duration-200 resize-none overflow-hidden placeholder:font-instrument placeholder:text-lg"
-              style={{ height: textareaHeight }}
-            />
+        <div className="flex flex-1 flex-col gap-2 p-4 dark:bg-bgMain">
+          {/* <div className={` ${!show && "hidden"}`}> */}
+          <Textarea
+            value={secret}
+            onChange={handleTextAreaInput}
+            placeholder="write your secret here ..."
+            className="rounded-none text-xs textarea min-h-[60px] transition-all duration-200 resize-none overflow-hidden placeholder:font-instrument placeholder:text-lg"
+            style={{ height: textareaHeight }}
+          />
 
-            <Button
-              onClick={() => {
-                createSecret(secret as string);
-                setShow(false);
-                setSecret("");
-              }}
-              variant="outline"
-              className=" text-xs md:text-base py-0  dark:bg-bgMain my-2 text-black/60 dark:text-white/70 rounded-none font-instrument"
-            >
-              Wishper
-            </Button>
-          </div>
+          <Button
+            onClick={() => {
+              createSecret(secret as string);
+              // setShow(false);
+              setSecret("");
+            }}
+            variant="outline"
+            className=" text-xs md:text-base py-0 w-fit  dark:bg-bgMain my-2 text-black/60 dark:text-white/70 rounded-none font-instrument"
+          >
+            Wishper
+          </Button>
+          {/* </div> */}
 
           <Accordion type="single" collapsible>
             {isLoading ? (
@@ -138,14 +175,16 @@ export default function Page() {
                             role="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              upvoteSecret(secret.id as number);
+                              handleVote(secret.id as number, 'upvote');
                             }}
-                            aria-disabled={!!hasVoted(secret.id as number)}
+                            aria-disabled={!!hasVoted(secret.id as number) || votingInProgress[secret.id as number]}
                             className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "upvote"
                               ? "text-green-500 cursor-not-allowed"
                               : hasVoted(secret.id as number)
                                 ? "text-gray-400 cursor-not-allowed"
-                                : "hover:text-green-500 cursor-pointer"
+                                : votingInProgress[secret.id as number]
+                                  ? "text-gray-400 cursor-not-allowed"
+                                  : "hover:text-green-500 cursor-pointer"
                               }`}
                           >
                             <BiUpvote className="size-4" />
@@ -155,14 +194,16 @@ export default function Page() {
                             role="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              downvoteSecret(secret.id as number);
+                              handleVote(secret.id as number, 'downvote');
                             }}
-                            aria-disabled={!!hasVoted(secret.id as number)}
+                            aria-disabled={!!hasVoted(secret.id as number) || votingInProgress[secret.id as number]}
                             className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "downvote"
                               ? "text-red-500 cursor-not-allowed"
                               : hasVoted(secret.id as number)
                                 ? "text-gray-400 cursor-not-allowed"
-                                : "hover:text-red-500 cursor-pointer"
+                                : votingInProgress[secret.id as number]
+                                  ? "text-gray-400 cursor-not-allowed"
+                                  : "hover:text-red-500 cursor-pointer"
                               }`}
                           >
                             <BiDownvote className="size-4" />
@@ -237,7 +278,7 @@ export default function Page() {
         <Sheet open={isCommentOpen} onOpenChange={setIsCommentOpen}>
           <SheetContent
             side="bottom"
-            className="h-[62vh] p-0 z-50 w-full focus:outline-none"
+            className="h-[70vh] p-0 z-50 w-full focus:outline-none"
           >
             <SheetHeader className="sticky top-0 border-b p-4 dark:bg-white/5">
               <div className="flex items-center justify-between">
@@ -253,7 +294,7 @@ export default function Page() {
                 </Button>
               </div>
             </SheetHeader>
-            <div className="flex flex-col h-[calc(75vh-8rem)]">
+            <div className="flex flex-col h-[calc(80vh-8rem)]">
               <div className="flex-1 overflow-y-auto">
                 {!selectedSecret && (
                   <div className="flex items-center justify-center h-full">
