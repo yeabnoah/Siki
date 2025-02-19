@@ -321,7 +321,7 @@ export default function Page() {
               <div className="sticky bottom-0 left-0 right-0 border-t bg-background px-2 py-4 dark:border-white/10">
                 <div className="flex gap-2">
                   <Input
-                    className="border-none rounded-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 placeholder:font-instrument text-base py-2"
+                    className="border-none shadow-none rounded-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus:ring-0 focus-visible:ring-offset-0 focus:border-none placeholder:font-instrument text-base py-2"
                     placeholder="Add a comment..."
                     value={mobileComment}
                     onChange={(e) => setMobileComment(e.target.value)}

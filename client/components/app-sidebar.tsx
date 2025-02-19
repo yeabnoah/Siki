@@ -109,7 +109,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               onKeyDown={handleKeyDown}
               disabled={!selectedSecret}
               placeholder={selectedSecret ? "comment here" : "Select a secret to comment"}
-              className="border-none rounded-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 placeholder:font-instrument placeholder:text-lg text-base py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="border-none rounded-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus:ring-0 focus-visible:ring-offset-0 focus:border-none placeholder:font-instrument placeholder:text-lg text-base py-2 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             <Button
               onClick={handleSubmitComment}
