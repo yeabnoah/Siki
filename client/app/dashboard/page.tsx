@@ -21,7 +21,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
 import useSecretData from "@/store/secret.store";
 import dateformat from "dateformat";
-import { MessageSquare, Plus, Send, X } from "lucide-react";
+import { MessageSquare, Send, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 // import { BiDownvote, BiUpvote } from "react-icons/bi";
@@ -42,7 +42,7 @@ export default function Page() {
   const [secret, setSecret] = useState<string>();
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [mobileComment, setMobileComment] = useState<string>("");
-  const [textareaHeight, setTextareaHeight] = useState("60px");
+  const [textareaHeight] = useState("60px");
   const [isLoading, setIsLoading] = useState(true);
   const [votingInProgress, setVotingInProgress] = useState<{ [key: number]: boolean }>({});
 
@@ -146,7 +146,7 @@ export default function Page() {
 
           <Accordion type="single" collapsible>
             {isLoading ? (
-              <div className="flex items-center justify-center my-auto h-[80vh]">
+              <div className="flex font-instrument text-2xl items-center justify-center my-auto h-[45vh]">
                 Loading...
               </div>
             ) : (!secrets || secrets.length <= 0) ? (
@@ -297,7 +297,7 @@ export default function Page() {
             <div className="flex flex-col h-[calc(80vh-8rem)]">
               <div className="flex-1 overflow-y-auto">
                 {!selectedSecret && (
-                  <div className="flex items-center justify-center h-full">
+                  <div className="flex items-center  text-xl font-instrument justify-center h-full">
                     No selected Secret
                   </div>
                 )}

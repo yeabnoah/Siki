@@ -3,12 +3,11 @@ import type { Metadata } from "next";
 import {
   Geist,
   Geist_Mono,
+  Instrument_Serif,
   Inter,
   Playfair_Display,
-  Instrument_Serif,
 } from "next/font/google";
 import "./globals.css";
-import { Spotlight } from "@/components/ui/spotlight";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -66,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroup className="px-0">
             <SidebarGroupContent>
               {!selectedSecret && (
-                <div className=" flex items-center justify-center my-auto min-h-[70vh]">
+                <div className=" flex  font-instrument text-xl items-center justify-center my-auto min-h-[70vh]">
                   No selected Secret
                 </div>
               )}

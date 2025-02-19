@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 
 export function Spotlight() {
   return (
     <>
-      {/* Dark overlay */}
+
       <div
         className="pointer-events-none fixed inset-0 z-20 bg-black/40"
       />
-
-      {/* Multiple diagonal light beams */}
       <div
         className="pointer-events-none fixed inset-0 z-25"
         style={{
