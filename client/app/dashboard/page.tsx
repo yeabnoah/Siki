@@ -74,26 +74,15 @@ export default function Page() {
     setVotingInProgress(prev => ({ ...prev, [secretId]: true }));
 
     try {
-      const updatedSecrets = secrets.map(secret => {
-        if (secret.id === secretId) {
-          return {
-            ...secret,
-            [voteType]: (secret[voteType] || 0) + 1
-          };
-        }
-        return secret;
-      });
-
-      secrets.splice(0, secrets.length, ...updatedSecrets);
-
       if (voteType === 'upvote') {
         await upvoteSecret(secretId);
       } else {
         await downvoteSecret(secretId);
       }
-    } catch (error) {
       await getallSecrets();
+    } catch (error) {
       console.error('Voting failed:', error);
+      await getallSecrets();
     } finally {
       setVotingInProgress(prev => ({ ...prev, [secretId]: false }));
     }
