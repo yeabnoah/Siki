@@ -154,114 +154,116 @@ export default function Page() {
                 No secrets Found
               </div>
             ) : (
-              secrets.reverse().map((secret, index) => (
-                <AccordionItem
-                  key={index}
-                  value={`item-${index}`}
-                  className="border dark:border-white/10 shadow-sm my-2"
-                  onClick={() => {
-                    setSelectedSecret(secret);
-                  }}
-                >
-                  <AccordionTrigger className="p-2">
-                    <div className="flex flex-col md:flex md:flex-row md:justify-between gap-1 justify-center md:items-center w-full md:px-2 pr-1">
-                      <span className="font-light text-xs md:text-sm font-inter">
-                        {secret.title}
-                      </span>
+              [...secrets]
+                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                .map((secret, index) => (
+                  <AccordionItem
+                    key={index}
+                    value={`item-${index}`}
+                    className="border dark:border-white/10 shadow-sm my-2"
+                    onClick={() => {
+                      setSelectedSecret(secret);
+                    }}
+                  >
+                    <AccordionTrigger className="p-2">
+                      <div className="flex flex-col md:flex md:flex-row md:justify-between gap-1 justify-center md:items-center w-full md:px-2 pr-1">
+                        <span className="font-light text-xs md:text-sm font-inter">
+                          {secret.title}
+                        </span>
 
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-3">
-                          <div
-                            role="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleVote(secret.id as number, 'upvote');
-                            }}
-                            aria-disabled={!!hasVoted(secret.id as number) || votingInProgress[secret.id as number]}
-                            className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "upvote"
-                              ? "text-green-500 cursor-not-allowed"
-                              : hasVoted(secret.id as number)
-                                ? "text-gray-400 cursor-not-allowed"
-                                : votingInProgress[secret.id as number]
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-3">
+                            <div
+                              role="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleVote(secret.id as number, 'upvote');
+                              }}
+                              aria-disabled={!!hasVoted(secret.id as number) || votingInProgress[secret.id as number]}
+                              className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "upvote"
+                                ? "text-green-500 cursor-not-allowed"
+                                : hasVoted(secret.id as number)
                                   ? "text-gray-400 cursor-not-allowed"
-                                  : "hover:text-green-500 cursor-pointer"
-                              }`}
-                          >
-                            <BiUpvote className="size-4" />
-                            <span className="text-xs">{secret.upvote || 0}</span>
+                                  : votingInProgress[secret.id as number]
+                                    ? "text-gray-400 cursor-not-allowed"
+                                    : "hover:text-green-500 cursor-pointer"
+                                }`}
+                            >
+                              <BiUpvote className="size-4" />
+                              <span className="text-xs">{secret.upvote || 0}</span>
+                            </div>
+                            <div
+                              role="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleVote(secret.id as number, 'downvote');
+                              }}
+                              aria-disabled={!!hasVoted(secret.id as number) || votingInProgress[secret.id as number]}
+                              className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "downvote"
+                                ? "text-red-500 cursor-not-allowed"
+                                : hasVoted(secret.id as number)
+                                  ? "text-gray-400 cursor-not-allowed"
+                                  : votingInProgress[secret.id as number]
+                                    ? "text-gray-400 cursor-not-allowed"
+                                    : "hover:text-red-500 cursor-pointer"
+                                }`}
+                            >
+                              <BiDownvote className="size-4" />
+                              <span className="text-xs">
+                                {secret.downvote || 0}
+                              </span>
+                            </div>
                           </div>
+
                           <div
-                            role="button"
+                            className="flex items-center space-x-2"
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleVote(secret.id as number, 'downvote');
+                              setSelectedSecret(secret);
+                              if (window.innerWidth < 768) {
+                                setIsCommentOpen(true);
+                              }
                             }}
-                            aria-disabled={!!hasVoted(secret.id as number) || votingInProgress[secret.id as number]}
-                            className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "downvote"
-                              ? "text-red-500 cursor-not-allowed"
-                              : hasVoted(secret.id as number)
-                                ? "text-gray-400 cursor-not-allowed"
-                                : votingInProgress[secret.id as number]
-                                  ? "text-gray-400 cursor-not-allowed"
-                                  : "hover:text-red-500 cursor-pointer"
-                              }`}
                           >
-                            <BiDownvote className="size-4" />
-                            <span className="text-xs">
-                              {secret.downvote || 0}
+                            <MessageSquare className="dark:text-white/40 size-3" />
+                            <span className="dark:text-white/40 text-sm font-light font-inter">
+                              {secret.comments.length}
                             </span>
                           </div>
+                          <Separator
+                            orientation="vertical"
+                            className="h-3 dark:bg-white/40 bg-black/50 hidden md:block"
+                          />
+                          <span className="dark:text-white/40 text-xs font-inter font-light hidden md:block">
+                            {dateformat(secret.createdAt, "shortDate")}
+                          </span>
                         </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent
+                      className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${isCommentOpen ? "hidden md:block" : ""}`}
+                    >
+                      {secret.secretContent}
 
-                        <div
-                          className="flex items-center space-x-2"
+                      <div className="mt-4 flex justify-end md:hidden">
+                        <Button
+
+                          variant="outline"
+                          size="sm"
+                          className="gap-2 bg-transparent  rounded-none"
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedSecret(secret);
-                            if (window.innerWidth < 768) {
-                              setIsCommentOpen(true);
-                            }
+                            setIsCommentOpen(true);
                           }}
                         >
-                          <MessageSquare className="dark:text-white/40 size-3" />
-                          <span className="dark:text-white/40 text-sm font-light font-inter">
-                            {secret.comments.length}
-                          </span>
-                        </div>
-                        <Separator
-                          orientation="vertical"
-                          className="h-3 dark:bg-white/40 bg-black/50 hidden md:block"
-                        />
-                        <span className="dark:text-white/40 text-xs font-inter font-light hidden md:block">
-                          {dateformat(secret.createdAt, "shortDate")}
-                        </span>
+                          <MessageSquare className="h-4 w-4" color="gray" />
+                          <span className=" text-[gray]">Comment</span>
+                        </Button>
                       </div>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent
-                    className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${isCommentOpen ? "hidden md:block" : ""}`}
-                  >
-                    {secret.secretContent}
-
-                    <div className="mt-4 flex justify-end md:hidden">
-                      <Button
-
-                        variant="outline"
-                        size="sm"
-                        className="gap-2 bg-transparent  rounded-none"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedSecret(secret);
-                          setIsCommentOpen(true);
-                        }}
-                      >
-                        <MessageSquare className="h-4 w-4" color="gray" />
-                        <span className=" text-[gray]">Comment</span>
-                      </Button>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))
+                    </AccordionContent>
+                  </AccordionItem>
+                ))
             )}
           </Accordion>
         </div>
@@ -306,17 +308,19 @@ export default function Page() {
                     No comments yet
                   </div>
                 )}
-                {selectedSecret?.comments.map((comment, index) => (
-                  <div
-                    key={index}
-                    className=" px-4 py-2 border-b-[.6px] dark:border-white/5"
-                  >
-                    <div className="text-xs text-muted-foreground">
-                      {dateformat(comment.createdAt, "shortDate")}
+                {selectedSecret?.comments
+                  .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                  .map((comment, index) => (
+                    <div
+                      key={index}
+                      className=" px-4 py-2 border-b-[.6px] dark:border-white/5"
+                    >
+                      <div className="text-xs text-muted-foreground">
+                        {dateformat(comment.createdAt, "shortDate")}
+                      </div>
+                      <div className="mt-1 text-sm">{comment.commentContent}</div>
                     </div>
-                    <div className="mt-1 text-sm">{comment.commentContent}</div>
-                  </div>
-                ))}
+                  ))}
               </div>
               <div className="sticky bottom-0 left-0 right-0 border-t bg-background px-2 py-4 dark:border-white/10">
                 <div className="flex gap-2">
