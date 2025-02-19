@@ -9,23 +9,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Textarea } from "@/components/ui/textarea";
-import useSecretData from "@/store/secret.store";
-import dateformat from "dateformat";
-import { MessageSquare, Mic2Icon, Plus, X } from "lucide-react";
-import { useEffect, useState } from "react";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Input } from "@/components/ui/input";
-import { Send } from "lucide-react";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Textarea } from "@/components/ui/textarea";
+import useSecretData from "@/store/secret.store";
+import dateformat from "dateformat";
+import { MessageSquare, Plus, Send } from "lucide-react";
+import { useEffect, useState } from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
-import { Spotlight } from "@/components/ui/spotlight";
 // import { BiDownvote, BiUpvote } from "react-icons/bi";
 
 export default function Page() {
@@ -131,12 +129,13 @@ export default function Page() {
                             upvoteSecret(secret.id as number);
                           }}
                           aria-disabled={!!hasVoted(secret.id as number)}
-                          className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "upvote"
-                            ? "text-green-500 cursor-not-allowed"
-                            : hasVoted(secret.id as number)
+                          className={`flex items-center space-x-1 transition-colors ${
+                            hasVoted(secret.id as number) === "upvote"
+                              ? "text-green-500 cursor-not-allowed"
+                              : hasVoted(secret.id as number)
                               ? "text-gray-400 cursor-not-allowed"
                               : "hover:text-green-500 cursor-pointer"
-                            }`}
+                          }`}
                         >
                           <BiUpvote className="size-4" />
                           <span className="text-xs">{secret.upvote || 0}</span>
@@ -148,12 +147,13 @@ export default function Page() {
                             downvoteSecret(secret.id as number);
                           }}
                           aria-disabled={!!hasVoted(secret.id as number)}
-                          className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "downvote"
-                            ? "text-red-500 cursor-not-allowed"
-                            : hasVoted(secret.id as number)
+                          className={`flex items-center space-x-1 transition-colors ${
+                            hasVoted(secret.id as number) === "downvote"
+                              ? "text-red-500 cursor-not-allowed"
+                              : hasVoted(secret.id as number)
                               ? "text-gray-400 cursor-not-allowed"
                               : "hover:text-red-500 cursor-pointer"
-                            }`}
+                          }`}
                         >
                           <BiDownvote className="size-4" />
                           <span className="text-xs">
@@ -188,8 +188,9 @@ export default function Page() {
                   </div>
                 </AccordionTrigger>
                 <AccordionContent
-                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${isCommentOpen ? "hidden md:block" : ""
-                    }`}
+                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${
+                    isCommentOpen ? "hidden md:block" : ""
+                  }`}
                 >
                   {secret.secretContent}
                 </AccordionContent>
