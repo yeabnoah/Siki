@@ -24,5 +24,3 @@ model comment {
   createdAt      DateTime @default(now())
   secret         secret   @relation(fields: [secretId], references: [id], onDelete: Cascade)
 }
-
-

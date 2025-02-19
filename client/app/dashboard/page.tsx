@@ -21,7 +21,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
 import useSecretData from "@/store/secret.store";
 import dateformat from "dateformat";
-import { MessageSquare, Plus, Send } from "lucide-react";
+import { MessageSquare, Plus, Send, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 // import { BiDownvote, BiUpvote } from "react-icons/bi";
@@ -38,14 +38,22 @@ export default function Page() {
     downvoteSecret,
     hasVoted,
   } = useSecretData();
-  const [show, setShow] = useState<boolean>();
+  const [show, setShow] = useState<boolean>(true);
   const [secret, setSecret] = useState<string>();
   const [isCommentOpen, setIsCommentOpen] = useState(false);
   const [mobileComment, setMobileComment] = useState<string>("");
   const [textareaHeight, setTextareaHeight] = useState("60px");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getallSecrets();
+    const fetchSecrets = async () => {
+      try {
+        await getallSecrets();
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchSecrets();
   }, [getallSecrets, selectedSecret]);
 
   const handleTextAreaInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -100,130 +108,153 @@ export default function Page() {
           </div>
 
           <Accordion type="single" collapsible>
-            {secrets.length <= 0 && (
-              <div className=" flex items-center justify-center my-auto h-[80vh]">
+            {isLoading ? (
+              <div className="flex items-center justify-center my-auto h-[80vh]">
+                Loading...
+              </div>
+            ) : (!secrets || secrets.length <= 0) ? (
+              <div className="flex items-center justify-center my-auto h-[80vh]">
                 No secrets Found
               </div>
-            )}
-            {secrets.reverse().map((secret, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="border dark:border-white/10 shadow-sm my-2"
-                onClick={() => {
-                  setSelectedSecret(secret);
-                }}
-              >
-                <AccordionTrigger className="p-2">
-                  <div className="flex flex-col md:flex md:flex-row md:justify-between gap-1 justify-center md:items-center w-full md:px-2 pr-1">
-                    <span className="font-light text-xs md:text-sm font-inter">
-                      {secret.title}
-                    </span>
+            ) : (
+              secrets.reverse().map((secret, index) => (
+                <AccordionItem
+                  key={index}
+                  value={`item-${index}`}
+                  className="border dark:border-white/10 shadow-sm my-2"
+                  onClick={() => {
+                    setSelectedSecret(secret);
+                  }}
+                >
+                  <AccordionTrigger className="p-2">
+                    <div className="flex flex-col md:flex md:flex-row md:justify-between gap-1 justify-center md:items-center w-full md:px-2 pr-1">
+                      <span className="font-light text-xs md:text-sm font-inter">
+                        {secret.title}
+                      </span>
 
-                    <div className="flex items-center space-x-2">
-                      <div className="flex items-center space-x-3">
-                        <div
-                          role="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            upvoteSecret(secret.id as number);
-                          }}
-                          aria-disabled={!!hasVoted(secret.id as number)}
-                          className={`flex items-center space-x-1 transition-colors ${
-                            hasVoted(secret.id as number) === "upvote"
+                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-3">
+                          <div
+                            role="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              upvoteSecret(secret.id as number);
+                            }}
+                            aria-disabled={!!hasVoted(secret.id as number)}
+                            className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "upvote"
                               ? "text-green-500 cursor-not-allowed"
                               : hasVoted(secret.id as number)
-                              ? "text-gray-400 cursor-not-allowed"
-                              : "hover:text-green-500 cursor-pointer"
-                          }`}
-                        >
-                          <BiUpvote className="size-4" />
-                          <span className="text-xs">{secret.upvote || 0}</span>
-                        </div>
-                        <div
-                          role="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            downvoteSecret(secret.id as number);
-                          }}
-                          aria-disabled={!!hasVoted(secret.id as number)}
-                          className={`flex items-center space-x-1 transition-colors ${
-                            hasVoted(secret.id as number) === "downvote"
+                                ? "text-gray-400 cursor-not-allowed"
+                                : "hover:text-green-500 cursor-pointer"
+                              }`}
+                          >
+                            <BiUpvote className="size-4" />
+                            <span className="text-xs">{secret.upvote || 0}</span>
+                          </div>
+                          <div
+                            role="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              downvoteSecret(secret.id as number);
+                            }}
+                            aria-disabled={!!hasVoted(secret.id as number)}
+                            className={`flex items-center space-x-1 transition-colors ${hasVoted(secret.id as number) === "downvote"
                               ? "text-red-500 cursor-not-allowed"
                               : hasVoted(secret.id as number)
-                              ? "text-gray-400 cursor-not-allowed"
-                              : "hover:text-red-500 cursor-pointer"
-                          }`}
+                                ? "text-gray-400 cursor-not-allowed"
+                                : "hover:text-red-500 cursor-pointer"
+                              }`}
+                          >
+                            <BiDownvote className="size-4" />
+                            <span className="text-xs">
+                              {secret.downvote || 0}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div
+                          className="flex items-center space-x-2"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedSecret(secret);
+                            if (window.innerWidth < 768) {
+                              setIsCommentOpen(true);
+                            }
+                          }}
                         >
-                          <BiDownvote className="size-4" />
-                          <span className="text-xs">
-                            {secret.downvote || 0}
+                          <MessageSquare className="dark:text-white/40 size-3" />
+                          <span className="dark:text-white/40 text-sm font-light font-inter">
+                            {secret.comments.length}
                           </span>
                         </div>
+                        <Separator
+                          orientation="vertical"
+                          className="h-3 dark:bg-white/40 bg-black/50 hidden md:block"
+                        />
+                        <span className="dark:text-white/40 text-xs font-inter font-light hidden md:block">
+                          {dateformat(secret.createdAt, "shortDate")}
+                        </span>
                       </div>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent
+                    className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${isCommentOpen ? "hidden md:block" : ""}`}
+                  >
+                    {secret.secretContent}
 
-                      <div
-                        className="flex items-center space-x-2"
+                    <div className="mt-4 flex justify-end md:hidden">
+                      <Button
+
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 bg-transparent  rounded-none"
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedSecret(secret);
-                          if (window.innerWidth < 768) {
-                            setIsCommentOpen(true);
-                          }
+                          setIsCommentOpen(true);
                         }}
                       >
-                        <MessageSquare className="dark:text-white/40 size-3" />
-                        <span className="dark:text-white/40 text-sm font-light font-inter">
-                          {secret.comments.length}
-                        </span>
-                      </div>
-                      <Separator
-                        orientation="vertical"
-                        className="h-3 dark:bg-white/40 bg-black/50 hidden md:block"
-                      />
-                      <span className="dark:text-white/40 text-xs font-inter font-light hidden md:block">
-                        {dateformat(secret.createdAt, "shortDate")}
-                      </span>
+                        <MessageSquare className="h-4 w-4" color="gray" />
+                        <span className=" text-[gray]">Comment</span>
+                      </Button>
                     </div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent
-                  className={`py-2 px-2 md:px-4 text-xs font-inter font-light border-t dark:border-white/10 mt-2 pt-2 ${
-                    isCommentOpen ? "hidden md:block" : ""
-                  }`}
-                >
-                  {secret.secretContent}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
+                  </AccordionContent>
+                </AccordionItem>
+              ))
+            )}
           </Accordion>
         </div>
 
-        <Button
+        {/* <Button
           onClick={() => {
             setShow(!show);
           }}
           className="group size-11 rounded-none fixed transition-all hover:scale-110 flex hover:bg-white/50 bg-white/70 dark:bg-bgMain dark:hover:bg-bgMain justify-center items-center bottom-5 right-5 md:right-[400px] border z-10"
         >
           <Plus className="dark:text-white/40 text-black/60" />
-        </Button>
+        </Button> */}
 
         <Sheet open={isCommentOpen} onOpenChange={setIsCommentOpen}>
-          <SheetContent side="bottom" className="h-[80vh] p-0 z-50">
-            <SheetHeader className="border-b p-4 dark:bg-white/5">
+          <SheetContent
+            side="bottom"
+            className="h-[62vh] p-0 z-50 w-full focus:outline-none"
+          >
+            <SheetHeader className="sticky top-0 border-b p-4 dark:bg-white/5">
               <div className="flex items-center justify-between">
-                <SheetTitle className=" font-instrument">Comments</SheetTitle>
-                {/* <Button
+                <SheetTitle className="font-instrument">Comments</SheetTitle>
+                <Button
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsCommentOpen(false)}
+                  className="h-8 w-8 rounded-md hover:bg-transparent focus:outline-none focus-visible:outline-none focus-visible:ring-0"
                 >
-                  <X className="h-4 w-4" />
-                </Button> */}
+                  <X className="size-10" />
+                  <span className="sr-only">Close</span>
+                </Button>
               </div>
             </SheetHeader>
-            <div className="flex flex-col h-full">
-              <div className="flex-1 overflow-auto">
+            <div className="flex flex-col h-[calc(75vh-8rem)]">
+              <div className="flex-1 overflow-y-auto">
                 {!selectedSecret && (
                   <div className="flex items-center justify-center h-full">
                     No selected Secret
@@ -237,7 +268,7 @@ export default function Page() {
                 {selectedSecret?.comments.map((comment, index) => (
                   <div
                     key={index}
-                    className="border-b p-4 dark:border-white/10"
+                    className=" px-4 py-2 border-b-[.6px] dark:border-white/5"
                   >
                     <div className="text-xs text-muted-foreground">
                       {dateformat(comment.createdAt, "shortDate")}
@@ -246,21 +277,30 @@ export default function Page() {
                   </div>
                 ))}
               </div>
-              <div className="border-t p-4 dark:border-white/10">
+              <div className="sticky bottom-0 left-0 right-0 border-t bg-background px-2 py-4 dark:border-white/10">
                 <div className="flex gap-2">
                   <Input
+                    className="border-none rounded-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 placeholder:font-instrument text-base py-2"
                     placeholder="Add a comment..."
                     value={mobileComment}
                     onChange={(e) => setMobileComment(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && mobileComment.trim()) {
+                        createComment(mobileComment, selectedSecret?.id as number);
+                        setMobileComment("");
+                      }
+                    }}
                   />
                   <Button
                     onClick={() => {
-                      createComment(
-                        mobileComment,
-                        selectedSecret?.id as number
-                      );
-                      setMobileComment("");
+                      if (mobileComment.trim()) {
+                        createComment(mobileComment, selectedSecret?.id as number);
+                        setMobileComment("");
+                      }
                     }}
+                    disabled={!mobileComment.trim()}
+                    size="icon"
+                    className="focus:outline-none focus-visible:outline-none focus-visible:ring-0 hover:bg-transparent"
                   >
                     <Send className="h-4 w-4" />
                   </Button>
