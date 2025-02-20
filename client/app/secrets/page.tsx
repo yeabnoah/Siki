@@ -21,7 +21,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
 import useSecretData from "@/store/secret.store";
 import dateformat from "dateformat";
-import { MessageSquare, Send, X } from "lucide-react";
+import { MessageSquare, Send, X, BookOpen, RefreshCcw, Book } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 // import { BiDownvote, BiUpvote } from "react-icons/bi";
@@ -46,16 +46,20 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [votingInProgress, setVotingInProgress] = useState<{ [key: number]: boolean }>({});
 
+  const fetchSecrets = async () => {
+    try {
+      setIsLoading(true);
+      await getallSecrets();
+    } catch (error) {
+      console.error('Error fetching secrets:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchSecrets = async () => {
-      try {
-        await getallSecrets();
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchSecrets();
-  }, [getallSecrets, selectedSecret]);
+  }, []);
 
   const handleTextAreaInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setSecret(e.target.value);
@@ -105,6 +109,24 @@ export default function Page() {
             Wishper
           </div>
           <div className="flex justify-end items-center flex-row w-full gap-3">
+            <Button
+              onClick={() => window.location.href = '/rules'}
+              variant="ghost"
+              size="sm"
+              className="gap-2 hover:bg-transparent text-bgMain dark:text-white/70"
+            >
+              <Book />
+              <span className="hidden md:inline font-instrument text-lg">Rules</span>
+            </Button>
+            <Button
+              onClick={fetchSecrets}
+              variant="ghost"
+              size="sm"
+              className="gap-2 hover:bg-transparent  text-bgMain dark:text-white/70"
+            >
+              <RefreshCcw />
+              <span className="hidden md:inline font-instrument text-lg">Reload</span>
+            </Button>
             <ThemeSwitcher />
             {/* <SidebarTrigger className="-ml-1" /> */}
           </div>

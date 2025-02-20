@@ -51,7 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${inter.variable} ${InstrumentSerif.variable} antialiased font-inter font-light`}
+        className={`${geistSans.variable} ${geistMono.variable} dark:bg-bgMain ${playfairDisplay.variable} ${inter.variable} ${InstrumentSerif.variable} antialiased font-inter font-light`}
       >
         <Providers>
           {/* <Spotlight
