@@ -8,6 +8,7 @@ import {
   Playfair_Display,
 } from "next/font/google";
 import "./globals.css";
+import { PostHogProvider } from "@/lib/posthogProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,12 +54,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} dark:bg-bgMain ${playfairDisplay.variable} ${inter.variable} ${InstrumentSerif.variable} antialiased font-inter font-light`}
       >
-        <Providers>
-          {/* <Spotlight
-            className="-top-40 left-0 md:left-60 md:-top-20"
-            fill="white"
-          /> */}
-          {children}</Providers>
+        <PostHogProvider>
+          <Providers>
+            {children}
+          </Providers>
+        </PostHogProvider>
+
       </body>
     </html>
   );
