@@ -30,7 +30,7 @@ export default function Home() {
           </p>
 
           <Button
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/secrets")}
             className="px-6 sm:px-8 py-4 sm:py-6 font-instrument text-xl sm:text-2xl bg-bgMain dark:bg-white text-white dark:text-bgMain hover:bg-bgMain/90 dark:hover:bg-white/90 transition-all duration-200 flex items-center gap-2"
           >
             {isAiFetching ? (
