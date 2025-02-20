@@ -21,8 +21,8 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
 import useSecretData from "@/store/secret.store";
 import dateformat from "dateformat";
-import { MessageSquare, Send, X, BookOpen, RefreshCcw, Book } from "lucide-react";
-import { useEffect, useState } from "react";
+import { MessageSquare, Send, X, Book, RefreshCcw } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
 import { BiDownvote, BiUpvote } from "react-icons/bi";
 // import { BiDownvote, BiUpvote } from "react-icons/bi";
 
@@ -46,7 +46,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [votingInProgress, setVotingInProgress] = useState<{ [key: number]: boolean }>({});
 
-  const fetchSecrets = async () => {
+  const fetchSecrets = useCallback(async () => {
     try {
       setIsLoading(true);
       await getallSecrets();
@@ -55,11 +55,11 @@ export default function Page() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [getallSecrets]);
 
   useEffect(() => {
     fetchSecrets();
-  }, []);
+  }, [fetchSecrets]);
 
   const handleTextAreaInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setSecret(e.target.value);
@@ -101,7 +101,7 @@ export default function Page() {
         } as React.CSSProperties
       }
     >
-      {/* <Spotlight /> */}
+
       <SidebarInset>
         <header className="sticky justify-between top-0 flex shrink-0 items-center bg-white dark:bg-white/5 gap-2 border-b dark:border-white/10 p-4">
           <div className="flex items-center gap-2 font-instrument text-2xl text-black/80 dark:text-white/80 mx-2">
@@ -128,12 +128,12 @@ export default function Page() {
               <span className="hidden md:inline font-instrument text-lg">Reload</span>
             </Button>
             <ThemeSwitcher />
-            {/* <SidebarTrigger className="-ml-1" /> */}
+
           </div>
         </header>
 
         <div className="flex flex-1 flex-col gap-2 p-4 bg-white dark:bg-bgMain">
-          {/* <div className={` ${!show && "hidden"}`}> */}
+
           <Textarea
             value={secret}
             onChange={handleTextAreaInput}

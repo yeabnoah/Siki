@@ -59,6 +59,7 @@ export default function Rules() {
                 <div>
                     <h2 className="text-3xl font-semibold mb-3 font-instrument text-bgMain dark:text-white">4. Disclaimer</h2>
                     <p className="font-instrument text-xl text-red-600 dark:text-red-400">
+                        {/* eslint-disable-next-line react/no-unescaped-entities */}
                         This platform is provided "as is" without any warranties. We are not responsible for any content posted by users.
                         By using this service, you agree to follow these rules and terms. We reserve the right to modify these terms at any time.
                     </p>
