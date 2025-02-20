@@ -235,35 +235,41 @@ const removeVote = createEndpoint(
   },
   async (ctx) => {
     try {
+      const secretId = Number(ctx.params.id);
+      const voteType = ctx.body.voteType;
+
       const secret = await prisma.secret.findUnique({
-        where: {
-          id: Number(ctx.params.id),
-        },
+        where: { id: secretId },
       });
 
       if (!secret) {
-        throw new Error("Secret not found");
+        return {
+          data: null,
+          message: "Secret not found",
+          success: false,
+          error: "Secret not found",
+        };
       }
 
       const updatedSecret = await prisma.secret.update({
-        where: {
-          id: Number(ctx.params.id),
-        },
+        where: { id: secretId },
         data: {
-          [ctx.body.voteType]: Math.max(0, secret[ctx.body.voteType] - 1),
+          [voteType]: {
+            decrement: 1,
+          },
         },
       });
 
       return {
         data: updatedSecret,
-        message: "vote removed successfully",
+        message: `${voteType} removed successfully`,
         success: true,
         error: null,
       };
     } catch (err) {
       return {
         data: null,
-        message: "error happened while removing vote",
+        message: "Error removing vote",
         success: false,
         error: err,
       };
