@@ -90,10 +90,6 @@ NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key
 NEXT_PUBLIC_POSTHOG_HOST=your_posthog_host
 ```
 
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
