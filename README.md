@@ -69,15 +69,16 @@ pm2 start ecosystem.config.js
 
 ### Backend
 - **Runtime**: [Bun](https://bun.sh) v1.2.2+
-- **Database**: PostgreSQL with Prisma
-- **API**: RESTful endpoints
+- **Database**: PostgreSQL
+- **ORM** : Prisma
+- **API**: Better call
 - **Process Manager**: PM2
 
 ### Frontend
 - **Framework**: Next.js with App Router
 - **Analytics**: PostHog
 - **Styling**: Modern CSS/SCSS
-- **State Management**: React Hooks
+- **State Management**: zustand
 
 ## 🔐 Environment Setup
 
